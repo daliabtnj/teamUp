@@ -3,6 +3,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:teamup/utils/colors.dart';
 import 'package:teamup/widgets/text_field_input.dart';
 
+// LoginScreen widget which is a StatefulWidget
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
 
@@ -10,13 +11,16 @@ class LoginScreen extends StatefulWidget {
   State<LoginScreen> createState() => _LoginScreenState();
 }
 
+// State class for LoginScreen
 class _LoginScreenState extends State<LoginScreen> {
+  // Controllers for email and password text fields
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
   @override
   void dispose() {
     super.dispose();
+    // Dispose controllers when the widget is disposed
     _emailController.dispose();
     _passwordController.dispose();
   }
@@ -29,6 +33,7 @@ class _LoginScreenState extends State<LoginScreen> {
           width: double.infinity,
           child: Stack(
             children: [
+              // Background SVG image
               Positioned.fill(
                 child: SvgPicture.asset(
                   'assets/svg_outline.svg',
@@ -39,27 +44,28 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                 ),
               ),
+              // Main content container
               Container(
                 padding: EdgeInsets.symmetric(horizontal: 32),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Flexible(flex: 2, child: Container()),
+                    Flexible(flex: 2, child: Container()), // Spacer
+                    // Logo SVG image
                     SvgPicture.asset(
                       'assets/svg_outline.svg',
                       height: 225,
                       colorFilter: ColorFilter.mode(brandGreen, BlendMode.srcIn),
                     ),
-                    // const SizedBox(height: 40),
-                    // text field input for email
+                    // Email text field
                     TextFieldInput(
                       textInputType: TextInputType.emailAddress,
                       textEditingController: _emailController,
                       labelText: 'Email',
                       hintText: 'Please enter your email',
                     ),
-                    const SizedBox(height: 20), // Separates the email and password fields
-                    // text field input for password
+                    const SizedBox(height: 20), // Spacer
+                    // Password text field
                     TextFieldInput(
                       textInputType: TextInputType.text,
                       textEditingController: _passwordController,
@@ -67,7 +73,8 @@ class _LoginScreenState extends State<LoginScreen> {
                       hintText: 'Please enter your password',
                       isPass: true,
                     ),
-                    const SizedBox(height: 20),
+                    const SizedBox(height: 20), // Spacer
+                    // Forgot password text
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -93,8 +100,8 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                       ],
                     ),
-                    // button for login
-                    const SizedBox(height: 20), // Separates the password field and the login button
+                    const SizedBox(height: 20), // Spacer
+                    // Login and Google sign-in buttons
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
@@ -128,8 +135,8 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                       ],
                     ),
-                    Flexible(flex: 2, child: Container()),
-                    // SizedBox(height: 200),
+                    Flexible(flex: 2, child: Container()), // Spacer
+                    // Catch up text
                     RichText(
                       textAlign: TextAlign.center,
                       text: TextSpan(
@@ -149,7 +156,8 @@ class _LoginScreenState extends State<LoginScreen> {
                         ],
                       ),
                     ),
-                    SizedBox(height: 10),
+                    SizedBox(height: 10), // Spacer
+                    // Sign up text
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -175,7 +183,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                       ],
                     ),
-                    SizedBox(height: 20),
+                    SizedBox(height: 20), // Spacer
                   ],
                 ),
               ),
