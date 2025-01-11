@@ -20,3 +20,5 @@ This project is licensed under [MIT License](LICENSE). Feel free to use and modi
 ---
 
 Stay tuned for updates and milestones as we continue building the Sports Matchmaking App!
+
+Notion notebook: https://www.notion.so/Flutter-16798f3acfc98033b3bbec92f8e68acf
