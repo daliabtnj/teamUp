@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:teamup/screens/authenticate/register.dart';
 import 'package:teamup/utils/colors.dart';
 import 'package:teamup/widgets/text_field_input.dart';
 
@@ -172,14 +173,26 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                         ),
                         Container(
-                          child: Text(
-                            'Sign up.',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 16,
-                              fontWeight: FontWeight.w500,
+                          child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: ThemeData.dark().scaffoldBackgroundColor,
+                              padding: EdgeInsets.symmetric(horizontal: 0),
                             ),
-                          ),
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(builder: (context) => RegisterScreen()),
+                              );
+                            },
+                            child: Text(
+                              'Sign up.',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 16,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          )
                         ),
                       ],
                     ),

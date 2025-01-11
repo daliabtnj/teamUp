@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart'; 
 import 'package:firebase_core/firebase_core.dart';
+import 'package:teamup/screens/home.dart';
 import 'package:teamup/screens/login.dart';
+import 'package:teamup/screens/register.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -18,7 +20,7 @@ class MyApp extends StatelessWidget {
       title: 'Team Up',
       theme: ThemeData.dark(
       ),
-      home: LoginScreen()
+      home: RegisterScreen()
     //   home: ResponsiveLayout(
     //     webScreenLayout: WebScreenLayout(), 
     //     mobileScreenLayout: MobileScreenLayout()),
