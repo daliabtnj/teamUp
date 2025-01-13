@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart'; 
 import 'package:firebase_core/firebase_core.dart';
-import 'package:teamup/screens/home.dart';
-import 'package:teamup/screens/login.dart';
-import 'package:teamup/screens/register.dart';
+import 'package:teamup/screens/authenticate/login.dart';
+import 'package:teamup/screens/authenticate/register.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
