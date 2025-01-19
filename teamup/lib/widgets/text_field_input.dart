@@ -19,6 +19,7 @@ class TextFieldInput extends StatelessWidget {
     );
 
     return TextField(
+      controller: textEditingController,
       decoration: InputDecoration(
         labelText: labelText,
         hintText: hintText,

@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:teamup/screens/authenticate/login.dart';
+import 'package:teamup/resources/auth_methods.dart';
 import 'package:teamup/utils/colors.dart';
+import 'package:teamup/widgets/loading.dart';
 import 'package:teamup/widgets/text_field_input.dart';
 
 // RegisterScreen widget which is a StatefulWidget
 class RegisterScreen extends StatefulWidget {
-  const RegisterScreen({super.key});
+  final Function toggleView;
+  const RegisterScreen({super.key, required this.toggleView});
 
   @override
   State<RegisterScreen> createState() => _RegisterScreenState();
@@ -18,6 +20,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
+  final AuthMethods _auth = AuthMethods();
+
+  // States
+  bool loading = false;
+  String error = '';
+
   @override
   void dispose() {
     super.dispose();
@@ -28,9 +36,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return loading? Loading() : Scaffold(
       body: SafeArea(
-        child: SizedBox(
+        child: Container(
           width: double.infinity,
           child: Stack(
             children: [
@@ -128,29 +136,41 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       hintText: 'Please enter your password',
                       isPass: true,
                     ),
-                    const SizedBox(height: 20), // Spacer
-                    // Login and Google sign-in buttons
+                    const SizedBox(height: 5), 
+                    Text(error, style: TextStyle(color: Colors.redAccent),),
+                    const SizedBox(height: 5), // Spacer
+                    // Sign up button
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
-                        Container(
-                          width: 140,
-                          alignment: Alignment.center,
-                          padding: const EdgeInsets.symmetric(vertical: 8),
-                          decoration: ShapeDecoration(
-                            shape: RoundedRectangleBorder(
-                              borderRadius: const BorderRadius.all(Radius.circular(9)),
-                              side: BorderSide(color: brandGreen, width: 1),
+                        InkWell(
+                          onTap: () async {
+                            setState(() {loading = true;});
+                            dynamic result = await _auth.signUpUserWithEmailAndPassword(email: _emailController.text, password: _passwordController.text);
+                            if (result == null) {
+                              setState(() {loading = false;});
+                              setState(() {error = "Please enter a valid email and password.";}); 
+                            }
+                          },
+                          child: Container(
+                              width: 140,
+                              alignment: Alignment.center,
+                              padding: const EdgeInsets.symmetric(vertical: 8),
+                              decoration: ShapeDecoration(
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: const BorderRadius.all(Radius.circular(9)),
+                                  side: BorderSide(color: brandGreen, width: 1),
+                                ),
+                              ),
+                              child: Text(
+                                'Sign up',
+                                style: TextStyle(
+                                  color: brandGreen,
+                                  fontWeight: FontWeight.w900,
+                                  fontSize: 24,
+                                ),
+                              ),
                             ),
-                          ),
-                          child: Text(
-                            'Sign up',
-                            style: TextStyle(
-                              color: brandGreen,
-                              fontWeight: FontWeight.w900,
-                              fontSize: 24,
-                            ),
-                          ),
                         ),
                       ],
                     ),
@@ -197,10 +217,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               padding: EdgeInsets.symmetric(horizontal: 0),
                             ),
                             onPressed: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(builder: (context) => LoginScreen()),
-                              );
+                              setState(() {loading = true;});
+                              widget.toggleView();
                             },
                             child: Text(
                               'Sign in.',

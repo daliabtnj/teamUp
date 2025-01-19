@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:teamup/screens/authenticate/register.dart';
+import 'package:teamup/resources/auth_methods.dart';
 import 'package:teamup/utils/colors.dart';
+import 'package:teamup/widgets/loading.dart';
 import 'package:teamup/widgets/text_field_input.dart';
 
 // LoginScreen widget which is a StatefulWidget
 class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key});
+  final Function toggleView;
+  const LoginScreen({super.key, required this.toggleView});
 
   @override
   State<LoginScreen> createState() => _LoginScreenState();
@@ -17,6 +19,11 @@ class _LoginScreenState extends State<LoginScreen> {
   // Controllers for email and password text fields
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  final AuthMethods _auth = AuthMethods();
+
+  // States
+  bool loading = false;
+  String error = '';
 
   @override
   void dispose() {
@@ -28,9 +35,9 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return loading ? Loading() : Scaffold(
       body: SafeArea(
-        child: SizedBox(
+        child: Container(
           width: double.infinity,
           child: Stack(
             children: [
@@ -74,7 +81,9 @@ class _LoginScreenState extends State<LoginScreen> {
                       hintText: 'Please enter your password',
                       isPass: true,
                     ),
-                    const SizedBox(height: 20), // Spacer
+                    const SizedBox(height: 5), // Spacer
+                    // Error text
+                    Text(error, style: TextStyle(color: Colors.redAccent)),
                     // Forgot password text
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -106,24 +115,37 @@ class _LoginScreenState extends State<LoginScreen> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
-                        Container(
-                          width: 140,
-                          alignment: Alignment.center,
-                          padding: const EdgeInsets.symmetric(vertical: 8),
-                          decoration: ShapeDecoration(
-                            shape: RoundedRectangleBorder(
-                              borderRadius: const BorderRadius.all(Radius.circular(9)),
-                              side: BorderSide(color: brandGreen, width: 1),
+                        InkWell(
+                          onTap: () async {
+                            // Call the signInWithEmailAndPassword method from AuthMethods
+                            setState(() {loading = true;});
+                            dynamic result = await _auth.signInWithEmailAndPassword(_emailController.text, _passwordController.text);
+                            if (result == null) {
+                              setState(() {
+                              setState(() {loading = false;});
+                                error = 'The credentials entered are invalid.';
+                              });
+                            }
+                          },
+                          child: Container(
+                              width: 140,
+                              alignment: Alignment.center,
+                              padding: const EdgeInsets.symmetric(vertical: 8),
+                              decoration: ShapeDecoration(
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: const BorderRadius.all(Radius.circular(9)),
+                                  side: BorderSide(color: brandGreen, width: 1),
+                                ),
+                              ),
+                              child: Text(
+                                'Login',
+                                style: TextStyle(
+                                  color: brandGreen,
+                                  fontWeight: FontWeight.w900,
+                                  fontSize: 24,
+                                ),
+                              ),
                             ),
-                          ),
-                          child: Text(
-                            'Login',
-                            style: TextStyle(
-                              color: brandGreen,
-                              fontWeight: FontWeight.w900,
-                              fontSize: 24,
-                            ),
-                          ),
                         ),
                         ElevatedButton(
                           onPressed: () async {
@@ -179,10 +201,8 @@ class _LoginScreenState extends State<LoginScreen> {
                               padding: EdgeInsets.symmetric(horizontal: 0),
                             ),
                             onPressed: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(builder: (context) => RegisterScreen()),
-                              );
+                              setState(() {loading = true;});
+                              widget.toggleView();
                             },
                             child: Text(
                               'Sign up.',
