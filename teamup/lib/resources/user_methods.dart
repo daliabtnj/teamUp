@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:teamup/models/user.dart';
 
-class UserActions {
+class UserMethods {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   // Update User bio (returns true if successful, returns null if error)
