@@ -50,61 +50,107 @@ class EventMethods {
     }
   }
 
-// Get event by event id (eid)
-Future<MyEvent?> getEventByEid(String eid) async {
-  try {
-    // Fetch the document from Firestore
-    final DocumentSnapshot docSnapshot = await _firestore.collection('events').doc(eid).get();
-
-    // Check if the document exists
-    if (docSnapshot.exists) {
-      // Get the document data as a Map
-      final Map<String, dynamic> data = docSnapshot.data() as Map<String, dynamic>;
-
-      // Map the data to a MyEvent object
-      return MyEvent(
-        eid: eid,
-        uidCreatedBy: data['createdBy'] ?? '', // Use default value if field is missing
-        uidAdmin: data['admin'] ?? '', // Use default value if field is missing
-        participants: List<String>.from(data['participants'] ?? []), // Convert to List<String>
-        title: data['title'] ?? '', // Use default value if field is missing
-        description: data['description'] ?? '', // Use default value if field is missing
-        location: data['location'] ?? '', // Use default value if field is missing
-        startTime: (data['startTime'] as Timestamp).toDate(), // Convert Firestore Timestamp to DateTime
-        endTime: (data['endTime'] as Timestamp).toDate(), // Convert Firestore Timestamp to DateTime
-      );
-    } else {
-      // Document does not exist
-      print('Event with eid $eid not found');
-      return null;
-    }
-  } catch (e) {
-    print('Error fetching event: ${e.toString()}');
-    return null;
-  }
-}
-
-  // Add admin uid
-  Future updateUserUsername(MyUser user, String username) async {
+  // Get event by event id (eid)
+  Future<MyEvent?> getEventByEid(String eid) async {
     try {
-      await _firestore.collection('users').doc(user.uid).update({
-        'username': username,
-      });
-      user.username = username;
-      return true;
+      // Fetch the document from Firestore
+      final DocumentSnapshot docSnapshot = await _firestore.collection('events').doc(eid).get();
+
+      // Check if the document exists
+      if (docSnapshot.exists) {
+        // Get the document data as a Map
+        final Map<String, dynamic> data = docSnapshot.data() as Map<String, dynamic>;
+
+        // Map the data to a MyEvent object
+        return MyEvent(
+          eid: eid,
+          uidCreatedBy: data['createdBy'] ?? '', // Use default value if field is missing
+          uidAdmin: data['admin'] ?? '', // Use default value if field is missing
+          participants: List<String>.from(data['participants'] ?? []), // Convert to List<String>
+          title: data['title'] ?? '', // Use default value if field is missing
+          description: data['description'] ?? '', // Use default value if field is missing
+          location: data['location'] ?? '', // Use default value if field is missing
+          sport: data['sport'] ?? '', // Use default value if field is missing
+          startTime: (data['startTime'] as Timestamp).toDate(), // Convert Firestore Timestamp to DateTime
+          endTime: (data['endTime'] as Timestamp).toDate(), // Convert Firestore Timestamp to DateTime
+        );
+      } else {
+        // Document does not exist
+        print('Event with eid $eid not found');
+        return null;
+      }
     } catch (e) {
-      print(e.toString());
+      print('Error fetching event: ${e.toString()}');
       return null;
     }
   }
 
-  // Update event type (meaning the sport in question)
+  // Modify event (requires event admin privileges)
+  Future<bool?> modifyEvent(String uid, String eid, String param, dynamic newValue) async { // uid is the uid of user trying to perform action, eid is the event id, param is the parameter to be updated, newValue is the new value
+    try {
+      // Check if the user is an admin of the event
+      final DocumentSnapshot docSnapshot = await _firestore.collection('events').doc(eid).get();
 
-  // Update event location
+      // Check if the document exists
+      if (docSnapshot.exists) {
+        // Get the document data as a Map
+        final Map<String, dynamic> data = docSnapshot.data() as Map<String, dynamic>;
+        final dynamic eventAdminUser = data['admin'] ?? []; // Get the admin uid
+        if (eventAdminUser == uid) {
+          // User is an admin of the event
+          // Since uid corresponds to an admin id, we can update the event type
+          await _firestore.collection('events').doc(eid).update(
+            {
+              param: newValue, // Update with new sport
+            });
+          return true;
+        } else {
+          // User is not an admin of the event
+          print('User with uid $uid is not an admin of the event with eid $eid');
+          return false;
+        }
 
-  // Update start time
+      } else {
+        // Document does not exist
+        print('Event with eid $eid not found');
+        return false;
+      }
+    } catch (e) {
+      print('Error updating event type: ${e.toString()}');
+    }
+    return false;
+  }
 
-  // Update end time
+  // Delete event (requires event admin privileges)
+  Future<bool?> deleteEvent(String uid, String eid) async {
+    try {
+      // Check if the user is an admin of the event
+      final DocumentSnapshot docSnapshot = await _firestore.collection('events').doc(eid).get();
 
+      // Check if the document exists
+      if (docSnapshot.exists) {
+        // Get the document data as a Map
+        final Map<String, dynamic> data = docSnapshot.data() as Map<String, dynamic>;
+        final dynamic eventAdminUser = data['admin'] ?? []; // Get the admin uid
+        if (eventAdminUser == uid) {
+          // User is an admin of the event
+          // Delete the event
+          await _firestore.collection('events').doc(eid).delete();
+          return true;
+        } else {
+          // User is not an admin of the event
+          print('User with uid $uid is not an admin of the event with eid $eid');
+          return false;
+        }
 
+      } else {
+        // Document does not exist
+        print('Event with eid $eid not found');
+        return false;
+      }
+    } catch (e) {
+      print('Error deleting event: ${e.toString()}');
+    }
+    return false;
+  }
 }

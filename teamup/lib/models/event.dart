@@ -5,11 +5,12 @@ class MyEvent {
   List<String> participants;
   String title = '';
   String description = '';
+  String sport = '';
   final String location;
   final DateTime startTime;
   final DateTime endTime;
 
-  MyEvent({required this.eid, required this.uidCreatedBy, required this.uidAdmin, required this.participants, required this.title, required this.description, required this.location, required this.startTime, required this.endTime});
+  MyEvent({required this.eid, required this.uidCreatedBy, required this.uidAdmin, required this.participants, required this.title, required this.description, required this.sport, required this.location, required this.startTime, required this.endTime});
 }
 
 
